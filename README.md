@@ -118,10 +118,10 @@ kubectl get svc
 
 ### The application is now accessible on the web.
 
- - python-flask-app
+ #### python-flask-app
 ![Screenshot 2024-05-24 140116](https://github.com/balogsun/doc-test/assets/125329091/0bebc530-2cab-4164-b711-d3a54a60008f)
 
- - hello-kubernetes-app
+ #### hello-kubernetes-app
 ![Screenshot 2024-05-24 140136](https://github.com/balogsun/doc-test/assets/125329091/29f1a823-dce1-41a6-9491-92df38dfa54b)
 
 
