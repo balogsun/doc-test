@@ -3,9 +3,8 @@
 
 ### 2. Install terraform that is compatible with you sandbox OS - https://developer.hashicorp.com/terraform/install
 
-    The terraform modules below will create a VPC with 3 private and public subnets, and will also Deploy an EKS cluster (version 1.30) in that VPC.
-
-    Below is a detailed explanation of each resource and how they work together:
+The terraform modules below will create a VPC with 3 private and public subnets, and will also Deploy an EKS cluster (version 1.30) in that VPC.
+Below is a detailed explanation of each resource and how they work together:
 
 ### Step 1:
  - Create a `provider.tf` file to configure the AWS provider to use the `ca-central-1` region and retrieves information about the current region and its available availability zones.
