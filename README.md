@@ -27,8 +27,6 @@ Create a `variables.tf` file defines four input variables for customizing an AWS
 - **`key_pair_name`**: Defines the AWS key pair name for SSH access (`"project-key"`).
 - **`eks_node_instance_type`**: Determines the instance type for EKS nodes (`"t2.medium"`).
 
-These variables allow me to easily customize and reuse your Terraform configuration across different environments.
-
 ```hcl
 variable "cluster-name" {
   default = "pjct-cluster"
