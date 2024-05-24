@@ -1,4 +1,3 @@
-
 ### Install AWS CLI that is compatible with you sandbox OS - Using AWS documentation. https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
 
 ### Install terraform that is compatible with you sandbox OS - https://developer.hashicorp.com/terraform/install
@@ -79,7 +78,8 @@ Default output format [none]
 ```
 
 #### Run the command 
-```sh aws eks update-kubeconfig --region ca-central-1 --name pjct-cluster
+```sh
+aws eks update-kubeconfig --region ca-central-1 --name pjct-cluster
 ```
 to update the kubeconfig file with the necessary configuration to access the EKS cluster named "pjct-cluster" in the AWS region "ca-central-1".
 
