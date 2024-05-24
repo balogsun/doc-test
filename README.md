@@ -52,6 +52,17 @@ Dependencies ensure that the IAM role policies are attached before creating the 
 
 Create a `vpc.tf` file creates a Virtual Private Cloud (VPC) with public and private subnets distributed across three availability zones, configures internet access through an internet gateway, sets up NAT gateways for outbound internet access from private subnets, associates route tables for proper traffic routing, and creates resources such as route table associations, NAT gateway routes, and Elastic IP addresses.
 
+#### Run the command "aws configure" to set up your AWS Command Line Interface (CLI) with your AWS credentials and default settings, including your Access Key ID, Secret Access Key, default region, and default output format.
+
+```sh
+aws configure
+
+Access Key ID: *********************
+Secret key: ******************************************
+Deafult region Name [none] ca-central-1
+Default output format [none]
+```
+
 ### Clone this repo to your directory, change directory to **`terraform-eks-seun`** and run terraform command to initialize your modules.
 
 ```sh
@@ -66,17 +77,6 @@ terraform plan
 terraform apply -auto-approve
 ```
 ![Screenshot 2024-05-24 133331](https://github.com/balogsun/doc-test/assets/125329091/49de57cc-147f-4050-856f-5b8aca981247)
-
-#### Run the command "aws configure" to set up your AWS Command Line Interface (CLI) with your AWS credentials and default settings, including your Access Key ID, Secret Access Key, default region, and default output format.
-
-```sh
-aws configure
-
-Access Key ID: *********************
-Secret key: ******************************************
-Deafult region Name [none] ca-central-1
-Default output format [none]
-```
 
 #### Run the command 
 ```sh
