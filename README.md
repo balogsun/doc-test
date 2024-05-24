@@ -65,6 +65,7 @@ terraform plan
 
 terraform apply -auto-approve
 ```
+![Screenshot 2024-05-24 133331](https://github.com/balogsun/doc-test/assets/125329091/49de57cc-147f-4050-856f-5b8aca981247)
 
 #### Run the command "aws configure" to set up your AWS Command Line Interface (CLI) with your AWS credentials and default settings, including your Access Key ID, Secret Access Key, default region, and default output format.
 
@@ -89,8 +90,18 @@ aws eks list-clusters
 
 kubectl get nodes -o wide
 ```
+![Screenshot 2024-05-24 134454](https://github.com/balogsun/doc-test/assets/125329091/cc1c766e-5c32-4fd3-aacc-ac3e7a7dd4fb)
 
-We will test two application deployment using two configured manifest files, **`python-flask1.yml`** and **`hello-world.yaml`**
+#### Cluster setup
+![Screenshot 2024-05-24 134307](https://github.com/balogsun/doc-test/assets/125329091/757190d8-d3f1-4ad9-9d9c-0c935b36d5a8)
+
+#### VPC setup
+![Screenshot 2024-05-24 133546](https://github.com/balogsun/doc-test/assets/125329091/cb252202-34ea-475e-89e2-cc531dda8867)
+
+#### Node group config
+![Screenshot 2024-05-24 134242](https://github.com/balogsun/doc-test/assets/125329091/bb8c9e0d-8d6c-4bbb-84a5-5758bd771c30)
+
+## We will test two application deployment using two configured manifest files, **`python-flask1.yml`** and **`hello-world.yaml`**
 
 ### Change directory to **`deployments`**, and run the commands below to run these deployments. 
 Each deployment will create two replicas and will be exposed with the load balancer.
@@ -106,8 +117,15 @@ kubectl apply -f hello-world.yaml
 ```sh
 kubectl get svc
 ```
+![Screenshot 2024-05-24 140054](https://github.com/balogsun/doc-test/assets/125329091/e20ebe39-33c3-4ebe-abae-5afd127e18b9)
 
 The application is now accessible on the web.
+- python-flask-app
+![Screenshot 2024-05-24 140116](https://github.com/balogsun/doc-test/assets/125329091/0bebc530-2cab-4164-b711-d3a54a60008f)
+
+- hello-kubernetes-app
+![Screenshot 2024-05-24 140136](https://github.com/balogsun/doc-test/assets/125329091/29f1a823-dce1-41a6-9491-92df38dfa54b)
+
 
 ## Clean Up
 - Delete the deployment
