@@ -49,7 +49,7 @@ variable "eks_node_instance_type" {
 
 - Create a `vpc.tf` file creates a Virtual Private Cloud (VPC) with public and private subnets distributed across three availability zones, configures internet access through an internet gateway, sets up NAT gateways for outbound internet access from private subnets, associates route tables for proper traffic routing, and creates resources such as route table associations, NAT gateway routes, and Elastic IP addresses.
 
-## Step 2: Run the command "aws configure" to set up your AWS Command Line Interface (CLI) with your AWS credentials and default settings, including your Access Key ID, Secret Access Key, default region, and default output format.
+## Step 2: Run the `aws configure` command to set up AWS Command Line Interface (CLI) with your AWS credentials and default settings, including Access Key ID, Secret Access Key, default region, and default output format.
 
 ```sh
 aws configure
@@ -60,7 +60,7 @@ Deafult region Name [none] ca-central-1
 Default output format [none]
 ```
 
-## Step 3: Clone this repo to your directory, change directory to **`terraform-eks-seun`** and run terraform command to initialize your modules.
+## Step 3: Clone this repo to your directory, change directory to **`terraform-eks-seun`** and run terraform command to initialize the modules.
 
 ```sh
 terraform init
