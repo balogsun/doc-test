@@ -50,9 +50,9 @@ Create `cluster.tf` file defines resources for setting up an AWS EKS (Elastic Ku
 
 Dependencies ensure that the IAM role policies are attached before creating the EKS cluster.
 
-The `vpc.tf` file creates a Virtual Private Cloud (VPC) with public and private subnets distributed across three availability zones, configures internet access through an internet gateway, sets up NAT gateways for outbound internet access from private subnets, associates route tables for proper traffic routing, and creates resources such as route table associations, NAT gateway routes, and Elastic IP addresses.
+Create a `vpc.tf` file creates a Virtual Private Cloud (VPC) with public and private subnets distributed across three availability zones, configures internet access through an internet gateway, sets up NAT gateways for outbound internet access from private subnets, associates route tables for proper traffic routing, and creates resources such as route table associations, NAT gateway routes, and Elastic IP addresses.
 
-### Clone this repo to your directory and run terraform command to initialize your modules.
+### Clone this repo to your directory, change directory to **`terraform-eks-seun`** and run terraform command to initialize your modules.
 
 ```sh
 terraform init
@@ -92,7 +92,7 @@ kubectl get nodes -o wide
 
 We will test two application deployment using two configured manifest files, **`python-flask1.yml`** and **`hello-world.yaml`**
 
-### Run the commands below to run these deployments. 
+### Change directory to **`deployments`**, and run the commands below to run these deployments. 
 Each deployment will create two replicas and will be exposed with the load balancer.
 
 ```sh
