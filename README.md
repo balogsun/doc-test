@@ -1,169 +1,122 @@
-# My VPC 
 
-This `vpc.tf` file is a Terraform script used to define and provision the networking infrastructure for an AWS Virtual Private Cloud (VPC). It includes resources for the VPC, subnets, internet gateway, route tables, and NAT gateways. Below is a detailed explanation of each resource and how they work together:
+### Install AWS CLI that is compatible with you sandbox OS - Using AWS documentation. https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
 
-## VPC Definition
+### Install terraform that is compatible with you sandbox OS - https://developer.hashicorp.com/terraform/install
+
+The terraform modules below will create a VPC with 3 private and public subnets, ans will aslo Deploy an EKS cluster (version 1.30) in that VPC.
+
+Below is a detailed explanation of each resource and how they work together:
+
+Create a `provider.tf` file configures the AWS provider to use the `ca-central-1` region and retrieves information about the current region and its available availability zones.
+
 ```hcl
-resource "aws_vpc" "pjct-vpc" {
-  cidr_block = "10.0.0.0/16"
+provider "aws" {
+  region  = "ca-central-1"
+}
 
-  tags = tomap({
-    "Name" = "pjct-eks-node",
-    "kubernetes.io/cluster/${var.cluster-name}" = "shared",
-  })
+data "aws_region" "current" {}
+
+data "aws_availability_zones" "available" {}
+```
+
+Create a `worker-node.tf` file configures an IAM role with necessary policies for EKS worker nodes, sets up an EKS node group with specific instance types, subnets, scaling parameters, including desired size, minimum size, and maximum size, and SSH access.
+ 
+Create a `variables.tf` file defines four input variables for customizing an AWS EKS cluster deployment:
+
+- **`cluster-name`**: Sets the default EKS cluster name (`"pjct-cluster"`).
+- **`eks_version`**: Specifies the Kubernetes version (`"1.30"`).
+- **`key_pair_name`**: Defines the AWS key pair name for SSH access (`"project-key"`).
+- **`eks_node_instance_type`**: Determines the instance type for EKS nodes (`"t2.medium"`).
+
+These variables allow me to easily customize and reuse your Terraform configuration across different environments.
+
+```hcl
+variable "cluster-name" {
+  default = "pjct-cluster"
+  type    = string
+}
+variable "eks_version" {
+  default = "1.30"
+  type    = string
+}
+variable "key_pair_name" {
+  default = "project-key"
+}
+variable "eks_node_instance_type" {
+  default = "t2.medium"
 }
 ```
-- **aws_vpc**: This resource creates a VPC with a CIDR block of `10.0.0.0/16`.
-- **cidr_block**: Specifies the IP range for the VPC.
-- **tags**: Tags the VPC for identification and integration with Kubernetes using the cluster name provided by the variable `${var.cluster-name}`.
 
-### Subnets
-#### Public Subnets
-```hcl
-resource "aws_subnet" "pjct-public-subnet" {
-  count = 3
+Create `cluster.tf` file defines resources for setting up an AWS EKS (Elastic Kubernetes Service) cluster with the necessary IAM roles, security groups, and the cluster itself. 
 
-  availability_zone       = data.aws_availability_zones.available.names[count.index]
-  cidr_block              = "10.0.${count.index}.0/24"
-  map_public_ip_on_launch = true
-  vpc_id                  = aws_vpc.pjct-vpc.id
+Dependencies ensure that the IAM role policies are attached before creating the EKS cluster.
 
-  tags = tomap({
-    "Name" = "pjct-eks-public-node",
-    "kubernetes.io/cluster/${var.cluster-name}" = "shared",
-  })
-}
+The `vpc.tf` file creates a Virtual Private Cloud (VPC) with public and private subnets distributed across three availability zones, configures internet access through an internet gateway, sets up NAT gateways for outbound internet access from private subnets, associates route tables for proper traffic routing, and creates resources such as route table associations, NAT gateway routes, and Elastic IP addresses.
+
+### Clone this repo to your directory and run terraform command to initialize your modules.
+
+```sh
+terraform init
 ```
-- **aws_subnet**: Creates public subnets in the VPC.
-- **count**: Creates 3 subnets, one in each availability zone.
-- **availability_zone**: Specifies the availability zone for each subnet.
-- **cidr_block**: Defines the IP range for each subnet (e.g., `10.0.0.0/24`, `10.0.1.0/24`, `10.0.2.0/24`).
-- **map_public_ip_on_launch**: Automatically assigns public IP addresses to instances launched in these subnets.
-- **vpc_id**: Associates the subnet with the VPC.
-- **tags**: Tags the subnets for identification.
 
-#### Private Subnets
-```hcl
-resource "aws_subnet" "pjct-private-subnet" {
-  count = 3
+### Run terraform commands to create the clusters, vpc and other resources.
 
-  availability_zone = data.aws_availability_zones.available.names[count.index]
-  cidr_block        = "10.0.${count.index + 3}.0/24"
-  vpc_id            = aws_vpc.pjct-vpc.id
+```sh
+terraform plan
 
-  tags = tomap({
-    "Name" = "pjct-eks-private-node",
-    "kubernetes.io/cluster/${var.cluster-name}" = "shared",
-  })
-}
+terraform apply -auto-approve
 ```
-- **aws_subnet**: Creates private subnets.
-- **cidr_block**: Defines the IP range for each private subnet (e.g., `10.0.3.0/24`, `10.0.4.0/24`, `10.0.5.0/24`).
 
-### Internet Gateway
-```hcl
-resource "aws_internet_gateway" "pjct-vpc" {
-  vpc_id = aws_vpc.pjct-vpc.id
+#### Run the command "aws configure" to set up your AWS Command Line Interface (CLI) with your AWS credentials and default settings, including your Access Key ID, Secret Access Key, default region, and default output format.
 
-  tags = {
-    Name = "pjct-vpc"
-  }
-}
+```sh
+aws configure
+
+Access Key ID: *********************
+Secret key: ******************************************
+Deafult region Name [none] ca-central-1
+Default output format [none]
 ```
-- **aws_internet_gateway**: Creates an Internet Gateway to allow internet access for the public subnets.
-- **vpc_id**: Associates the Internet Gateway with the VPC.
 
-### Route Tables
-#### Public Route Table
-```hcl
-resource "aws_route_table" "pjct-public-rt" {
-  vpc_id = aws_vpc.pjct-vpc.id
-
-  route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.pjct-vpc.id
-  }
-
-  tags = {
-    Name = "pjct-public-rt"
-  }
-}
+#### Run the command 
+```sh aws eks update-kubeconfig --region ca-central-1 --name pjct-cluster
 ```
-- **aws_route_table**: Creates a route table for the public subnets.
-- **route**: Adds a route to send all traffic (`0.0.0.0/0`) to the Internet Gateway.
+to update the kubeconfig file with the necessary configuration to access the EKS cluster named "pjct-cluster" in the AWS region "ca-central-1".
 
-#### Private Route Table
-```hcl
-resource "aws_route_table" "pjct-private-rt" {
-  count = 3
-  vpc_id = aws_vpc.pjct-vpc.id
+#### Confirm cluster and nodes are running with below command:
+```sh
+aws eks list-clusters
 
-  tags = {
-    Name = "pjct-private-rt-${count.index}"
-  }
-}
+kubectl get nodes -o wide
 ```
-- **aws_route_table**: Creates route tables for the private subnets (one per subnet).
 
-### Route Table Associations
-#### Public Route Table Associations
-```hcl
-resource "aws_route_table_association" "pjct-public-rt-assoc" {
-  count = 3
+We will test two application deployment using two configured manifest files, **`python-flask1.yml`** and **`hello-world.yaml`**
 
-  subnet_id      = aws_subnet.pjct-public-subnet[count.index].id
-  route_table_id = aws_route_table.pjct-public-rt.id
-}
+### Run the commands below to run these deployments. 
+Each deployment will create two replicas and will be exposed with the load balancer.
+
+```sh
+kubectl apply -f python-flask1.yml
+
+kubectl apply -f hello-world.yaml
 ```
-- **aws_route_table_association**: Associates the public subnets with the public route table.
 
-#### Private Route Table Associations
-```hcl
-resource "aws_route_table_association" "pjct-private-rt-assoc" {
-  count = 3
+### Get the list of services running and use the load balancer url information to access the application over the web.
 
-  subnet_id      = aws_subnet.pjct-private-subnet[count.index].id
-  route_table_id = aws_route_table.pjct-private-rt[count.index].id
-}
+```sh
+kubectl get svc
 ```
-- **aws_route_table_association**: Associates the private subnets with their respective private route tables.
 
-### NAT Gateways
-#### Elastic IPs for NAT Gateways
-```hcl
-resource "aws_eip" "nat-gateway-eip" {
-  count  = 3
-  domain = "vpc"
-}
+The application is now accessible on the web.
+
+## Clean Up
+- Delete the deployment
+```sh
+kubectl delete -f python-flask1.yml
+
+kubectl delete -f hello-world.yaml
 ```
-- **aws_eip**: Allocates Elastic IPs for the NAT Gateways.
-
-#### NAT Gateways
-```hcl
-resource "aws_nat_gateway" "nat-gateway" {
-  count = 3
-
-  allocation_id = aws_eip.nat-gateway-eip[count.index].id
-  subnet_id     = aws_subnet.pjct-public-subnet[count.index].id
-
-  tags = {
-    Name = "nat-gateway-${count.index}"
-  }
-}
+- Clean up the cluster
+```sh
+terraform destroy auto-approve
 ```
-- **aws_nat_gateway**: Creates NAT Gateways in the public subnets to allow instances in the private subnets to access the internet.
-
-#### Routes for NAT Gateways
-```hcl
-resource "aws_route" "nat-gateway-route" {
-  count = 3
-
-  route_table_id         = aws_route_table.pjct-private-rt[count.index].id
-  destination_cidr_block = "0.0.0.0/0"
-  nat_gateway_id         = aws_nat_gateway.nat-gateway[count.index].id
-}
-```
-- **aws_route**: Adds routes to the private route tables to route all internet-bound traffic through the NAT Gateways.
-
-### Summary
-This Terraform script sets up a VPC with both public and private subnets across three availability zones. It creates an internet gateway for the public subnets and NAT gateways for internet access from the private subnets. Route tables and associations ensure proper routing between these components. The setup is tagged for integration with an EKS cluster, enabling Kubernetes to manage resources within this infrastructure.
