@@ -1,7 +1,7 @@
 # Prerequisites:
-### 1. Install AWS CLI that is compatible with you sandbox OS - Using AWS documentation. https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
+### 1. Install AWS CLI - Using AWS documentation. https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
 
-### 2. Install terraform that is compatible with you sandbox OS - https://developer.hashicorp.com/terraform/install
+### 2. Install terraform - https://developer.hashicorp.com/terraform/install
 
 The terraform modules below will create a VPC with 3 private and public subnets, and will also Deploy an EKS cluster (version 1.30) in that VPC.
 Below is a detailed explanation of each resource and how they work together:
