@@ -2,7 +2,7 @@
 
 ### Install terraform that is compatible with you sandbox OS - https://developer.hashicorp.com/terraform/install
 
-The terraform modules below will create a VPC with 3 private and public subnets, ans will aslo Deploy an EKS cluster (version 1.30) in that VPC.
+The terraform modules below will create a VPC with 3 private and public subnets, and will also Deploy an EKS cluster (version 1.30) in that VPC.
 
 Below is a detailed explanation of each resource and how they work together:
 
